@@ -1,21 +1,54 @@
 # vue-mixin-namespace
-It provides a namespace for Vue mixin.
+This module provides a namespace for Vue mixin.
 
 Declare explicitly the dependency between a component and a mixin file. Make them loose coupling.
 
 Required: Vue 2, ECMAScript 2019
 
+
 # Usage
-## without vue-mixin-namespace
+### Using a mixin's property in a component's property
+You can access the mixin's property via `this[namespace]`.
+
+For example, if namespace is `somethingable` and method name is `some_method`, you can call the method by `this.somethingable.some_method()`.
+
+
+### Using a component's property in a mixin's property
+You need to declare the property's name in `global` property. If you did so, you can access via `this`, as non-namespaced mixin.
+
+### Example code
 
 ```JavaScript
 // component.vue
 
+import { with_namespace } from “vue-mixin-namespace.js”
 import Somethingable from “somethingable.js”
 
-mixin: [
-	Somethingable
-]
+export default {
+
+	mixins: with_namespace({
+		somethingable: Somethingable,
+	}),
+	
+	data() {
+		return {
+			some_value: 123,
+			foo: 456,
+			bar: 789,
+		}
+	},
+
+	methods: {
+		some_method() {
+			this.some_value	// 123
+			this.somethingable.some_value	// 'abc'
+			this.hoge	// undefined
+			this.somethingable.hoge	// 'def'
+		},
+	},
+	
+	// computed, watch, inject, created...
+}
 ```
 
 ```JavaScript
@@ -23,119 +56,42 @@ mixin: [
 
 export default {
 	
+	// Properties which import from the component.
+	global: [
+		'foo',
+		// data names, method names, computed property names,,,
+	],
+	
 	data() {
 		return {
-			is_touching: false,
+			some_value: 'abc',
+			hoge: 'def',
+			piyo: 'ghi',
 		}
 	},
 	
 	methods: {
-
-		start() {
-			this.is_touching = true
-			
-			this.absolute = {
-				x: event.pageX || event.changedTouches[0].pageX,	// PC&スマホ
-				y: event.pageY || event.changedTouches[0].pageY,	// PC&スマホ
-			}
-
-			this.start_point = this.absolute
-
-			const mousemove = this.move.bind(this)
-			window.addEventListener('mousemove', mousemove)
-			window.addEventListener('touchmove', mousemove)
-
-			const mouseup = () => {
-				window.removeEventListener('mousemove', mousemove)
-				window.removeEventListener('touchmove', mousemove)
-				this.end()
-			}
-
-			window.addEventListener('mouseup', mouseup, {once: true})
-			window.addEventListener('touchend', mouseup, {once: true})
-
-			this.move()
+		some_method() {
+			this.some_value	// 'abc'
+			this.foo	// 456
+			this.bar	// undefined : Declare 'bar' in global if you want to use.
+			this.$el	// undefined : Declare '$el' in global if you want to use.
+			this.hoge	// 'def'
 		},
 	},
+	
+	// computed, watch, inject, created...
 }
 ```
 
-## with vue-mixin-namespace
-
-```JavaScript
-// component.vue
-
-import {with_namespace} from “vue-mixin-namespace.js”
-import Somethingable from “somethingable.js”
-
-mixin: with_namespace({
-	somethingable: Somethingable
-})
-```
-
-```JavaScript
-// somethingable.js
-
-export default {
-	
-	data() {
-		return {
-			is_touching: false,
-		}
-	},
-	
-	methods: {
-
-		start() {
-			this.is_touching = true
-			
-			this.absolute = {
-				x: event.pageX || event.changedTouches[0].pageX,	// PC&スマホ
-				y: event.pageY || event.changedTouches[0].pageY,	// PC&スマホ
-			}
-
-			this.start_point = this.absolute
-
-			const mousemove = this.move.bind(this)
-			window.addEventListener('mousemove', mousemove)
-			window.addEventListener('touchmove', mousemove)
-
-			const mouseup = () => {
-				window.removeEventListener('mousemove', mousemove)
-				window.removeEventListener('touchmove', mousemove)
-				this.end()
-			}
-
-			window.addEventListener('mouseup', mouseup, {once: true})
-			window.addEventListener('touchend', mouseup, {once: true})
-
-			this.move()
-		},
-	},
-}
-```
-
-Add explanation about
-globals and this.somethingable
 
 # Install
 Just download a "vue-mixin-namespace.js" file and import it.
 
 This module uses latest ECMAScript syntax, like Object.fromEntries(). Please use Babel to transpile them.
 
+
 # FAQ
-
-### How to use namespaced mixin with non-namespaced mixin?
-Use spread syntax to merge them.
-
-```
-mixins: [
-	require('./chunk-draggable.mixin.js').default,
-	... with_namespace({
-		touchable: require('global/mixins/touchable.js').default,
-	})
-],
-```
 
 ### What properties can I use in namespaced mixin?
 - data
@@ -146,6 +102,19 @@ mixins: [
 - created
 - globals ← This module's feature
 
+### How to use namespaced mixin with non-namespaced mixin?
+Use spread syntax to merge them.
+
+```
+mixins: [
+	Fooable,
+	Buzzable,
+	... with_namespace({
+		somethingable: Somethingable,
+	})
+],
+```
+
 
 # Licence
-MIT
+[MIT](https://opensource.org/licenses/mit-license.php)
