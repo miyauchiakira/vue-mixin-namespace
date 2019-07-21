@@ -1,11 +1,11 @@
 /*!
- * vue-mixin-namespace.js v1.01
+ * vue-mixin-namespace.js v1.02
  * (c) 2019 Miyauchi Akira
  * Released under the MIT License.
  */
 
 function namespaced_mixin({namespace, mixin}) {
-
+	
 	const computed = {}
 
 	computed[namespace] = function() {
@@ -43,7 +43,7 @@ function namespaced_mixin({namespace, mixin}) {
 		}
 
 		// data (Symbolic Link)
-		{
+		if(mixin.data) {
 			const names = Object.keys(mixin.data())
 
 			names.forEach(name => {
@@ -77,7 +77,7 @@ function namespaced_mixin({namespace, mixin}) {
 		}
 
 		// methods (Entity)
-		{
+		if(mixin.methods) {
 			const methods = Object.fromEntries(Object.entries(mixin.methods).map(([name, func]) => ([name, func.bind(result)])))
 
 			Object.assign(result, methods)
@@ -89,7 +89,9 @@ function namespaced_mixin({namespace, mixin}) {
 	// data (Entity)
 	function data() {
 		const result = {}
-		result[`namespaces__${namespace}`] = mixin.data()
+		if(mixin.data) {
+			result[`namespaces__${namespace}`] = mixin.data()
+		}
 		return result
 	}
 
