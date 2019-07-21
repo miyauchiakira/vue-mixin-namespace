@@ -1,4 +1,6 @@
 # vue-mixin-namespace
+[日本語ドキュメント(JAPANESE)](README_ja.md)
+
 This module provides a namespace for Vue mixin.
 
 Declare explicitly the dependency between a component and a mixin file. Make them loose coupling.
