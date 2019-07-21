@@ -137,13 +137,14 @@ mixins: [
 ],
 ```
 
-### Which vue properties can I use in namespaced mixin?
+### What properties can I use in namespaced mixin?
 - data
-- computed (⭕️get ❌set)
+- computed (⭕️function ❌object)
 - methods
-- watch (⭕️function, option)
+- watch (⭕️function, object)
 - inject (⭕️array ❌object)
 - created
+- globals ← This module's feature
 
 
 # Licence
