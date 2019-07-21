@@ -119,8 +119,9 @@ Add explanation about
 globals and this.somethingable
 
 # Install
-Download "vue-mixin-namespace.js" and import it.
-This module uses latest ECMAScript syntax, like Object.fromEntries(). Please use Babel to trannspile them.
+Just download a "vue-mixin-namespace.js" file and import it.
+
+This module uses latest ECMAScript syntax, like Object.fromEntries(). Please use Babel to transpile them.
 
 # FAQ
 
@@ -136,7 +137,7 @@ mixins: [
 ],
 ```
 
-### Which vue properties are supported?
+### Which vue properties can I use in namespaced mixin?
 - data
 - computed (⭕️get ❌set)
 - methods
