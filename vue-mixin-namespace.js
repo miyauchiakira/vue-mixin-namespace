@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-namespace.js v1.00
+ * vue-mixin-namespace.js v1.01
  * (c) 2019 Miyauchi Akira
  * Released under the MIT License.
  */
@@ -12,9 +12,9 @@ function namespaced_mixin({namespace, mixin}) {
 
 		const result = {}
 
-		// globals (Symbolic Link)
-		if(mixin.globals) {
-			mixin.globals.forEach(name => {
+		// global (Symbolic Link)
+		if(mixin.global) {
+			mixin.global.forEach(name => {
 				Object.defineProperty(result, name, {
 					get: () => {
 						return this[name]
